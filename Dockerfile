@@ -1,0 +1,13 @@
+FROM node
+COPY package.json package.json
+RUN npm install
+COPY index.js index.js
+CMD node index.js
+
+ENV INFLUX_HOST "influx"
+ENV INFLUX_DATABASE "telegraf"
+ENV MASTER_HOST_EC2_ID "CHANGE_ME"
+ENV BACKUP_HOST_EC2_ID "CHANGE_ME"
+ENV RUN_INTERVAL_MS "300000"
+ENV LOAD_THRESHOLD "0.2"
+ENV AWS_SOMETHING ""
