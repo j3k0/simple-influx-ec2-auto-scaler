@@ -73,7 +73,7 @@ function run() {
     const max = result.reduce(maxMean, result[0]);
     console.log('load:', max);
     if (max.mean > 0.2) {
-      return startBackup('master is busy');
+      return startBackup('master is busy (load=' + max.mean + ')');
     }
 
     stopBackup();
