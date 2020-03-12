@@ -6,9 +6,11 @@ services:
     environment:
       INFLUX_HOST: "192.168.0.2"
       INFLUX_DATABASE: "telegraf"
-      AWS_SOMETHING: ""
       MASTER_HOST_EC2_ID: "api-i-12341234123412341"
       BACKUP_HOST_EC2_ID: "api-i-92341234123412342"
       RUN_INTERVAL_MS: "300000"
       LOAD_THRESHOLD: "0.2"
-
+      AWS_ACCESS_KEY_ID: ""
+      AWS_SECRET_ACCESS_KEY: ""
+      AWS_REGION: ""
+      TELEGRAF_HOST_PREFIX: "node-"
