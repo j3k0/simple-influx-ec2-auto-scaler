@@ -3,7 +3,7 @@
 > A *very* simple auto-scaler for EC2 + InfluxDB + Telegraf
 
 
-#### What does it do?
+### What does it do?
 
 Auto-scale is a big word: this is for a 2 servers setup:
 
@@ -19,9 +19,10 @@ This script will:
 - Start the backup server if:
   - master server is not reporting (it might be down)
   - master server load is over a given threshold
+- Stop the backup server otherwise.
 
 
-#### How does it work?
+### How does it work?
 
 A NodeJS script will run every 5 minutes (by default).
 
