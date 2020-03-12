@@ -15,10 +15,13 @@ AWS.config.getCredentials(function(err) {
   if (err) console.log(err.stack);
   // credentials not loaded
   else {
-    console.log("Access key:", AWS.config.credentials.accessKeyId);
-    console.log("Secret access key:", AWS.config.credentials.secretAccessKey);
+    console.log("AWS credentials are setup correctly");
+    console.log("Access key:", AWS.config.credentials.accessKeyId.slice(0, 8) + '...');
+    console.log("Secret access key:", AWS.config.credentials.secretAccessKey.slice(0, 8) + '...');
   }
 });
+
+console.log("Run interval: ~" + Math.round(runInterval / 1000 / 60) + " minutes.")
 
 function run() {
 
