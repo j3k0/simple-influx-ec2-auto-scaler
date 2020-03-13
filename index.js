@@ -100,35 +100,75 @@ function run() {
     }
   });
 
-  function updateCloudflarePool(instances) {
-    var ips = instances.map(function (i) { return i.publicIpAddress; }).filter(function (i) { return i; });
-    // const cloudflareZoneName = process.env.CLOUDFLARE_ZONE_NAME; // 'doutore.com';
-    // const cloudflareMonitorId = process.env.CLOUDFLARE_MONITOR_ID; // 'CHANGE_ME';
-    var options = {
+  function loadCloudflarePool(callback) {
+    const options = {
       hostname: 'api.cloudflare.com',
       port: 443,
       path: "/client/v4/accounts/" + cloudflareAccountId + "/load_balancers/pools/" + cloudflarePoolId,
-      method: 'PUT',
+      method: 'GET',
       headers: {
         'X-Auth-Key': cloudflareAuthKey,
         'X-Auth-Email': cloudflareAuthEmail,
         'Content-Type': 'application/json'
       }
     };
-    var body = {
-      // name: "doutore-{{ deploy_name }}-primary"
-      // description: "Doutore {{ deploy_name }} Primary Pool"
-      // notification_email: "{{ lookup('env', 'NOTIFICATION_EMAIL') }}"
-      // monitor: cloudflare_monitor_id;
-      origins: instances.filter(function (i) { return i.publicIpAddress; }).map(function (i) { return ({
-        name: i.instanceId,
-        address: i.publicIpAddress,
-        enabled: true
-      }); })
-    };
-    var req = https.request(options, function (res) { });
-    req.write(JSON.stringify(body));
+    const req = https.request(options, function (res) {
+      res.setEncoding('utf8');
+      let body = '';
+      res.on('data', (chunk) => {
+        body += chunk;
+      });
+      res.on('end', () => {
+        const json = JSON.parse(body);
+        if (!json.success && !json.result)
+          return;
+        callback(json.result);
+      });
+    });
     req.end();
+  }
+
+  function updateCloudflarePool(instances) {
+    loadCloudflarePool(pool => {
+      const ips = instances.map(function (i) { return i.publicIpAddress; }).filter(function (i) { return i; });
+      const options = {
+        hostname: 'api.cloudflare.com',
+        port: 443,
+        path: "/client/v4/accounts/" + cloudflareAccountId + "/load_balancers/pools/" + cloudflarePoolId,
+        method: 'PUT',
+        headers: {
+          'X-Auth-Key': cloudflareAuthKey,
+          'X-Auth-Email': cloudflareAuthEmail,
+          'Content-Type': 'application/json'
+        }
+      };
+      const body = {
+        name: pool.name,
+        description: pool.description,
+        notification_email: pool.notification_email,
+        monitor: pool.monitor,
+        origins: instances.filter(function (i) { return i.publicIpAddress; }).map(function (i) { return ({
+          name: i.instanceId,
+          address: i.publicIpAddress,
+          enabled: true
+        }); })
+      };
+      const req = https.request(options, function (res) {
+        res.setEncoding('utf8');
+        let data = '';
+        res.on('data', (chunk) => {
+          data += chunk;
+        });
+        res.on('end', () => {
+          const json = JSON.parse(data);
+          if (!json.success) {
+            console.log(data);
+          }
+        });
+      });
+      req.write(JSON.stringify(body));
+      req.end();
+    });
   }
 
   function autoScale(master, backup) {
@@ -177,7 +217,7 @@ function run() {
       }
       // If the largest mean from load5 is above the threshold, we start the backup server.
       var max = result.reduce(maxMean, result[0]);
-      console.log('load:', max);
+      console.log('load:', max.mean);
       if (max.mean > loadThreshold) {
         return startBackup('master is busy (load=' + max.mean + ')');
       }

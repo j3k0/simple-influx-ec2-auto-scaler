@@ -14,3 +14,9 @@ services:
       AWS_SECRET_ACCESS_KEY: ""
       AWS_REGION: ""
       TELEGRAF_HOST_PREFIX: "node-"
+      CLOUDFLARE_AUTH_EMAIL: "CHANGE_ME"
+      CLOUDFLARE_AUTH_KEY: "CHANGE_ME"
+      # curl -H "X-Auth-Key: $CLOUDFLARE_AUTH_KEY" -H "X-Auth-Email: $CLOUDFLARE_AUTH_EMAIL" https://api.cloudflare.com/client/v4/accounts
+      CLOUDFLARE_ACCOUNT_ID: "CHANGE_ME"
+      # curl -H "X-Auth-Key: $CLOUDFLARE_AUTH_KEY" -H "X-Auth-Email: $CLOUDFLARE_AUTH_EMAIL" "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/load_balancers/pools"
+      CLOUDFLARE_POOL_ID: "CHANGE_ME"
