@@ -72,7 +72,7 @@ function run() {
     // If the largest mean from load5 is above the threshold, we start the backup server.
     const max = result.reduce(maxMean, result[0]);
     console.log('load:', max);
-    if (max.mean > 0.2) {
+    if (max.mean > loadThreshold) {
       return startBackup('master is busy (load=' + max.mean + ')');
     }
 
