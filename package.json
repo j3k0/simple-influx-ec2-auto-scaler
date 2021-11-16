@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/j3k0/simple-influx-ec2-auto-scaler#readme",
   "dependencies": {
-    "aws-sdk": "^2.638.0",
+    "aws-sdk": "^2.814.0",
     "influx": "^5.5.1"
   }
 }
